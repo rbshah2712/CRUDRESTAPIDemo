@@ -2,14 +2,19 @@ version: 0.0
 os: linux
 
 files:
-  - source: target/
-    destination: /home/ec2-user/app/
+  - source: /
+    destination: /home/ec2-user/CRUDRESTAPIDemo
 
 hooks:
   ApplicationStop:
     - location: scripts/stop_application.sh
       timeout: 60
       runas: ec2-user
+
+  BeforeInstall:
+    - location: scripts/create_directory.sh
+      timeout: 60
+      runas: root
 
   ApplicationStart:
     - location: scripts/start_application.sh
