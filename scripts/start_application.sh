@@ -1,11 +1,22 @@
 #!/bin/bash
 
-cd /home/ec2-user/CRUDRESTAPIDemo
+APP_DIR="/home/ec2-user/CRUDRESTAPIDemo"
 
-JAR_FILE=$(find . -name "*.jar" | head -n 1)
+cd "$APP_DIR" || exit 1
 
-echo "Starting $JAR_FILE"
+JAR_FILE=$(find "$APP_DIR/target" -maxdepth 1 -type f -name "*.jar" | head -n 1)
 
-nohup java -jar "$JAR_FILE" > application.log 2>&1 &
+if [ -z "$JAR_FILE" ]; then
+    echo "ERROR: No JAR file found in $APP_DIR/target"
+    exit 1
+fi
 
-echo $! > application.pid
+echo "Starting application: $JAR_FILE"
+
+nohup java -jar "$JAR_FILE" > "$APP_DIR/application.log" 2>&1 &
+
+echo $! > "$APP_DIR/application.pid"
+
+echo "Application started with PID $(cat "$APP_DIR/application.pid")"
+
+exit 0
